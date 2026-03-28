@@ -110,6 +110,7 @@ causal-bench/
 │   └── workflows/
 │       └── ci.yml                   # GitHub Actions tests
 ├── pyproject.toml                   # Package metadata + dev dependencies
+├── requirements.txt                 # Legacy pip dependencies
 └── README.md
 ```
 
@@ -139,12 +140,12 @@ pip install -e ".[dev]"
 
 ```python
 from pgmpy.benchmark import BenchmarkRunner, RandomDAGSimulator, CausalDiscoveryEvaluator
-from pgmpy.estimators import PC, GES, MMHC
+from pgmpy.causal_discovery import GES, HillClimbSearch, PC
 
 # 1. Setup
 runner = BenchmarkRunner(
     simulators=[RandomDAGSimulator(n_nodes=10, edge_density=0.3)],
-    methods=[PC(), GES(), MMHC()],
+    methods=[PC(), GES(), HillClimbSearch()],
     evaluators=[CausalDiscoveryEvaluator()],
     n_seeds=20,
     n_jobs=4,

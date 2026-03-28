@@ -110,17 +110,16 @@ causal-bench/
 │   └── workflows/
 │       └── ci.yml                   # GitHub Actions tests
 ├── pyproject.toml                   # Package metadata + dev dependencies
-├── README.md
-└── plan.md                          # Implementation plan
+└── README.md
 ```
 
 ## Supported Tasks and Methods
 
-| Task | Target Methods | Evaluator |
-|---|---|---|
-| Causal Discovery | PC, GES, MMHC, ExactSearch | `CausalDiscoveryEvaluator` |
-| CI Testing | Chi-Square, G-Test, Fisher Z, KCI | `CITestEvaluator` |
-| Effect Estimation | CausalInference | `EffectEstimationEvaluator` |
+| Task              | Target Methods                    | Evaluator                   |
+| ----------------- | --------------------------------- | --------------------------- |
+| Causal Discovery  | PC, GES, MMHC, ExactSearch        | `CausalDiscoveryEvaluator`  |
+| CI Testing        | Chi-Square, G-Test, Fisher Z, KCI | `CITestEvaluator`           |
+| Effect Estimation | CausalInference                   | `EffectEstimationEvaluator` |
 
 ## Key Features
 

@@ -30,7 +30,7 @@ Repository = "https://github.com/Dijo-404/causal-bench"
 Issues = "https://github.com/Dijo-404/causal-bench/issues"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+include = ["pgmpy*"]
 
 [tool.ruff]
 line-length = 88

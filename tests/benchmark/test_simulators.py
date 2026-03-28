@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pandas as pd
 import pytest
-
 from causal_bench.simulators import RandomDAGSimulator
 from causal_bench.simulators.base import BaseSimulator
 from causal_bench.types import GroundTruth
@@ -88,7 +87,9 @@ class TestRandomDAGSimulatorSimulate:
         assert not data1.equals(data2), "Different seeds should produce different data."
 
     def test_metadata_recorded(self) -> None:
-        sim = RandomDAGSimulator(n_nodes=4, edge_density=0.5, functional_form="nonlinear")
+        sim = RandomDAGSimulator(
+            n_nodes=4, edge_density=0.5, functional_form="nonlinear"
+        )
         _, gt = sim.simulate(n_samples=50, seed=7)
         assert gt.metadata["n_nodes"] == 4
         assert gt.metadata["edge_density"] == 0.5

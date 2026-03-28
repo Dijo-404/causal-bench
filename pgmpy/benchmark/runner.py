@@ -30,7 +30,9 @@ class BenchmarkRunner:
                             method.fit(df)
 
                             predicted_graph = None
-                            if hasattr(method, "model_"):
+                            if hasattr(method, "causal_graph_"):
+                                predicted_graph = method.causal_graph_
+                            elif hasattr(method, "model_"):
                                 predicted_graph = method.model_
                             elif hasattr(method, "dag_"):
                                 predicted_graph = method.dag_

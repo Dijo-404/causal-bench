@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 
@@ -16,12 +17,7 @@ pgmpy.benchmark = benchmark
 
 sys.path.insert(0, script_dir)
 
-sys.modules["pgmpy.benchmark"] = benchmark
-pgmpy.benchmark = benchmark
-
-from pgmpy.estimators import GES as _GES  # noqa: E402
-from pgmpy.estimators import PC as _PC  # noqa: E402
-from pgmpy.estimators import MmhcEstimator as _MmhcEstimator  # noqa: E402
+from pgmpy.causal_discovery import GES, HillClimbSearch, PC  # noqa: E402
 
 from pgmpy.benchmark import (  # noqa: E402
     BenchmarkRunner,
@@ -29,28 +25,13 @@ from pgmpy.benchmark import (  # noqa: E402
     RandomDAGSimulator,
 )
 
-
-class PC:
-    def fit(self, data):
-        self.model_ = _PC(data=data).estimate(return_type="dag", show_progress=False)
-        return self
-
-
-class GES:
-    def fit(self, data):
-        self.model_ = _GES(data=data).estimate()
-        return self
-
-
-class MmhcEstimator:
-    def fit(self, data):
-        self.model_ = _MmhcEstimator(data=data).estimate()
-        return self
-
-
 runner = BenchmarkRunner(
     simulators=[RandomDAGSimulator(n_nodes=6, edge_density=0.3)],
-    methods=[PC(), GES(), MmhcEstimator()],
+    methods=[
+        PC(show_progress=False, n_jobs=1),
+        GES(),
+        HillClimbSearch(show_progress=False),
+    ],
     evaluators=[CausalDiscoveryEvaluator()],
     n_seeds=5,
 )

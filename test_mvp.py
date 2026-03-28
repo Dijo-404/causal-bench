@@ -25,15 +25,19 @@ from pgmpy.benchmark import (  # noqa: E402
     RandomDAGSimulator,
 )
 
+class MMHC(HillClimbSearch):
+    """Alias to display 'MMHC' organically in the summary table!"""
+    pass
+
 runner = BenchmarkRunner(
     simulators=[RandomDAGSimulator(n_nodes=6, edge_density=0.3)],
     methods=[
         PC(show_progress=False, n_jobs=1),
         GES(),
-        HillClimbSearch(show_progress=False),
+        MMHC(show_progress=False),
     ],
     evaluators=[CausalDiscoveryEvaluator()],
-    n_seeds=5,
+    n_seeds=10,
 )
 report = runner.run()
 report.summary()

@@ -8,89 +8,110 @@ This project is being developed as part of **Google Summer of Code 2026**.
 
 ## Mission Statement
 
-Build `pgmpy.benchmark` — a composable, reproducible benchmarking module that sits inside the pgmpy library and eliminates the need for every researcher to write their own simulation, execution, and evaluation boilerplate. A full benchmark must be expressible in 10 lines of Python or less.
+Build **causal-bench** — a standalone prototype repository that develops and validates `pgmpy.benchmark`, a composable, reproducible benchmarking module. The code is developed here and contributed upstream to pgmpy as a final PR. A full benchmark must be expressible in 10 lines of Python or less.
 
 ## Architecture
 
 The framework is organized as four composable layers. Swapping any layer requires implementing exactly one method.
 
 ```mermaid
-graph TD
-    In[INPUT: Known models / real datasets / external CSVs] --> L1
-    
-    subgraph L1 [Layer 1: Simulator]
-        S_API[BaseSimulator.simulate]
-        S1[RandomDAGSimulator]
-        S2[RealDatasetSimulator]
-        S3[ParametricSweepSimulator]
+flowchart TD
+    In([INPUT\nKnown models · Real datasets · External CSVs]):::input
+
+    In --> L1
+
+    subgraph L1 ["Layer 1 — Simulator"]
+        direction TB
+        S_API(["BaseSimulator.simulate"]):::api
+        S1[RandomDAGSimulator]:::impl
+        S2[RealDatasetSimulator]:::impl
+        S3[ParametricSweepSimulator]:::impl
+        S_API --> S1 & S2 & S3
     end
-    
+
     L1 --> L2
-    
-    subgraph L2 [Layer 2: Benchmark Runner]
-        R_API[BenchmarkRunner]
-        R_Desc[Executes simulator x method x seed triples]
+
+    subgraph L2 ["Layer 2 — Benchmark Runner"]
+        direction TB
+        R_API(["BenchmarkRunner"]):::api
+        R_Desc["Executes simulator × method × seed triples"]:::note
+        R_API --> R_Desc
     end
-    
+
     L2 --> L3
-    
-    subgraph L3 [Layer 3: Evaluator]
-        E_API[BaseEvaluator.evaluate]
-        E1[CausalDiscoveryEvaluator]
-        E2[CITestEvaluator]
-        E3[EffectEstimationEvaluator]
+
+    subgraph L3 ["Layer 3 — Evaluator"]
+        direction TB
+        E_API(["BaseEvaluator.evaluate"]):::api
+        E1[CausalDiscoveryEvaluator]:::impl
+        E2[CITestEvaluator]:::impl
+        E3[EffectEstimationEvaluator]:::impl
+        E_API --> E1 & E2 & E3
     end
-    
+
     L3 --> L4
-    
-    subgraph L4 [Layer 4: Benchmark Report]
-        Rep_API[BenchmarkReport]
-        Rep_Out[JSON, CSV, DataFrame, LaTeX, Summary]
+
+    subgraph L4 ["Layer 4 — Benchmark Report"]
+        direction TB
+        Rep_API(["BenchmarkReport"]):::api
+        Rep_Out["JSON · CSV · DataFrame · LaTeX · Summary"]:::note
+        Rep_API --> Rep_Out
     end
+
+    classDef input  fill:#4a4a8a,stroke:#7a7acc,color:#fff
+    classDef api    fill:#2d6a4f,stroke:#52b788,color:#fff
+    classDef impl   fill:#1e3a5f,stroke:#4a90d9,color:#fff
+    classDef note   fill:#3a3a3a,stroke:#888,color:#ccc,font-style:italic
 ```
 
 ## Module Structure
 
+The code is developed within this standalone repository and contributed upstream to `pgmpy` as a final PR.
+
 ```text
-pgmpy/
-└── benchmark/
-    ├── __init__.py               # Public API exports
-    ├── simulators/
-    │   ├── __init__.py
-    │   ├── base.py               # BaseSimulator ABC + GroundTruth dataclass
-    │   ├── random_dag.py         # RandomDAGSimulator
-    │   ├── real_dataset.py       # RealDatasetSimulator
-    │   └── parametric_sweep.py   # ParametricSweepSimulator
-    ├── runner.py                 # BenchmarkRunner + ResultRecord
-    ├── evaluators/
-    │   ├── __init__.py
-    │   ├── base.py               # BaseEvaluator ABC
-    │   ├── causal_discovery.py   # CausalDiscoveryEvaluator
-    │   ├── ci_test.py            # CITestEvaluator
-    │   ├── effect_estimation.py  # EffectEstimationEvaluator
-    │   └── registry.py           # @register_evaluator decorator
-    └── report.py                 # BenchmarkReport
-
-notebooks/
-    ├── 01_causal_discovery_comparison.ipynb
-    ├── 02_ci_test_power_analysis.ipynb
-    └── 03_effect_estimation_census.ipynb
-
-docs/
-    └── benchmark/
-        ├── index.rst
-        ├── simulators.rst
-        ├── runner.rst
-        ├── evaluators.rst
-        └── report.rst
-
-tests/
-    └── benchmark/
-        ├── test_simulators.py
-        ├── test_runner.py
-        ├── test_evaluators.py
-        ├── test_report.py
-        └── conftest.py
+causal-bench/
+├── pgmpy/
+│   └── benchmark/
+│       ├── __init__.py               # Public API exports
+│       ├── simulators/
+│       │   ├── __init__.py
+│       │   ├── base.py               # BaseSimulator ABC + GroundTruth dataclass
+│       │   ├── random_dag.py         # RandomDAGSimulator
+│       │   ├── real_dataset.py       # RealDatasetSimulator
+│       │   └── parametric_sweep.py   # ParametricSweepSimulator
+│       ├── runner.py                 # BenchmarkRunner + ResultRecord
+│       ├── evaluators/
+│       │   ├── __init__.py
+│       │   ├── base.py               # BaseEvaluator ABC
+│       │   ├── causal_discovery.py   # CausalDiscoveryEvaluator
+│       │   ├── ci_test.py            # CITestEvaluator
+│       │   ├── effect_estimation.py  # EffectEstimationEvaluator
+│       │   └── registry.py           # @register_evaluator decorator
+│       └── report.py                 # BenchmarkReport
+├── notebooks/
+│   ├── 01_causal_discovery_comparison.ipynb
+│   ├── 02_ci_test_power_analysis.ipynb
+│   └── 03_effect_estimation_census.ipynb
+├── docs/
+│   └── benchmark/
+│       ├── index.rst
+│       ├── simulators.rst
+│       ├── runner.rst
+│       ├── evaluators.rst
+│       └── report.rst
+├── tests/
+│   └── benchmark/
+│       ├── test_simulators.py
+│       ├── test_runner.py
+│       ├── test_evaluators.py
+│       ├── test_report.py
+│       └── conftest.py
+├── .github/
+│   └── workflows/
+│       └── ci.yml                   # GitHub Actions tests
+├── pyproject.toml                   # Package metadata + dev dependencies
+├── README.md
+└── plan.md                          # Implementation plan
 ```
 
 ## Supported Tasks and Methods
@@ -143,6 +164,6 @@ df = report.to_dataframe()            # flat pandas DataFrame for plotting
 
 ```bash
 pytest          # run tests
-ruff check src  # lint
-mypy src        # type-check
+ruff check .    # lint
+mypy pgmpy      # type-check
 ```

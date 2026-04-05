@@ -5,7 +5,9 @@ A composable benchmarking framework for causal discovery algorithms and conditio
 This project is being developed as part of **Google Summer of Code 2026**.
 
 ---
-
+## Note
+- development under progress in branch dev
+  
 ## Mission Statement
 
 Build **causal-bench** — a standalone prototype repository that develops and validates `pgmpy.benchmark`, a composable, reproducible benchmarking module. The code is developed here and contributed upstream to pgmpy as a final PR. A full benchmark must be expressible in 10 lines of Python or less.

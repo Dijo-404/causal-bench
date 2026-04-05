@@ -46,5 +46,4 @@ venv.bak/
 .typecheck_cache/
 
 # Custom project files
-plan.md
-agent.md
+agent/

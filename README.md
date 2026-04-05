@@ -122,12 +122,12 @@ causal-bench/
 | CI Testing        | Chi-Square, G-Test, Fisher Z, KCI | `CITestEvaluator`           |
 | Effect Estimation | CausalInference                   | `EffectEstimationEvaluator` |
 
-## Key Features
+## Phase 1 Status
 
-- **Combinatorial Execution Engine:** Executes every combination of simulator, method, and seed with error handling and wall-clock timing.
-- **Parallelism:** Executes tasks concurrently via joblib (loky backend) to bypass pickling issues and race conditions.
-- **Graceful Error Handling:** Full tracebacks are recorded without failing the entire run if a method times out or fails to converge.
-- **Reproducible Exports:** Output full reproducible experiment records to JSON, summarizing seed, runtime, system info, and component configurations.
+Phase 1 establishes the public API contracts, package layout, CI workflow, and
+test scaffolding. Execution logic and metric computation are intentionally
+deferred to later phases and currently raise `NotImplementedError` with phase
+milestones in the error message.
 
 ## Installation
 
@@ -136,28 +136,26 @@ causal-bench/
 pip install -e ".[dev]"
 ```
 
-## Quick Start
+## Interface Preview (Phase 1)
 
 ```python
-from pgmpy.benchmark import BenchmarkRunner, RandomDAGSimulator, CausalDiscoveryEvaluator
-from pgmpy.causal_discovery import GES, HillClimbSearch, PC
-
-# 1. Setup
-runner = BenchmarkRunner(
-    simulators=[RandomDAGSimulator(n_nodes=10, edge_density=0.3)],
-    methods=[PC(), GES(), HillClimbSearch()],
-    evaluators=[CausalDiscoveryEvaluator()],
-    n_seeds=20,
-    n_jobs=4,
+from pgmpy.benchmark import (
+    BenchmarkRunner,
+    CausalDiscoveryEvaluator,
+    RandomDAGSimulator,
 )
 
-# 2. Run
-report = runner.run()
+# Phase 1 creates stable constructor signatures and export surfaces.
+runner = BenchmarkRunner(
+    simulators=[RandomDAGSimulator(n_nodes=10, edge_density=0.3)],
+    methods=[object()],
+    evaluators=[CausalDiscoveryEvaluator()],
+    n_seeds=10,
+    n_jobs=1,
+)
 
-# 3. Analyze
-report.summary()                      # method x SHD/F1 table (mean +/- std)
-report.to_json("results.json")        # reproducible record
-df = report.to_dataframe()            # flat pandas DataFrame for plotting
+# In Phase 1 this is expected to raise NotImplementedError.
+runner.run()
 ```
 
 ## Development

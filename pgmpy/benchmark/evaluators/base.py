@@ -1,13 +1,19 @@
-from abc import ABC, abstractmethod
+"""Evaluator interfaces for benchmark metric computation."""
 
-import networkx as nx
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
 
 from ..simulators.base import GroundTruth
 
 
 class BaseEvaluator(ABC):
+    """Abstract evaluator for method predictions against ground truth."""
+
+    metric_keys: tuple[str, ...] = ()
+
     @abstractmethod
     def evaluate(
-        self, predicted: nx.DiGraph, ground_truth: GroundTruth
+        self, predicted: object, ground_truth: GroundTruth
     ) -> dict[str, float]:
-        pass
+        """Return metric dictionary with stable keys for all evaluations."""

@@ -47,3 +47,8 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--tb=short -v"
+markers = [
+    "unit: fast unit tests",
+    "integration: integration tests with real pgmpy components",
+    "slow: longer running benchmark tests",
+]
